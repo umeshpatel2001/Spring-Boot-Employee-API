@@ -1,30 +1,34 @@
 package com.example.EmployeeAPI.controllers;
 
-import com.example.EmployeeAPI.dto.EmployeeDTO;
+import com.example.EmployeeAPI.entities.EmployeeEntity;
+import com.example.EmployeeAPI.repositories.EmployeeRepository;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/employees")
 public class EmployeeController {
 
+    final private EmployeeRepository employeeRepository;
+
+    public EmployeeController(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
     @GetMapping(path = "/{employeeID}")
-    public EmployeeDTO getEmployeeById(@PathVariable Long employeeID) {
-        return new EmployeeDTO(
-                employeeID,
-                "Umesh",
-                "umesh@gmail.com",
-                27,
-                LocalDate.of(2025, 3, 12),
-                false
-        );
+    public EmployeeEntity getEmployeeById(@PathVariable Long employeeID) {
+        return employeeRepository.findById(employeeID).orElse(null);
     }
 
     @GetMapping
-    public String getAllEmployee(@RequestParam(required = false) Integer age,
-                                 @RequestParam(required = false) String sortBy) {
-        return "Hi age " + age + " " + sortBy;
+    public List<EmployeeEntity> getAllEmployee(@RequestParam(required = false) Integer age,
+                                               @RequestParam(required = false) String sortBy) {
+        return employeeRepository.findAll();
+    }
+
+    @PostMapping
+    public EmployeeEntity creteNewEmployee(@RequestBody EmployeeEntity inputEntity) {
+        return employeeRepository.save(inputEntity);
     }
 
 }
