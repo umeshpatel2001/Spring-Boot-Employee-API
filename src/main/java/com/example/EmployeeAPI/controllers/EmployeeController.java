@@ -1,7 +1,7 @@
 package com.example.EmployeeAPI.controllers;
 
-import com.example.EmployeeAPI.entities.EmployeeEntity;
-import com.example.EmployeeAPI.repositories.EmployeeRepository;
+import com.example.EmployeeAPI.dto.EmployeeDTO;
+import com.example.EmployeeAPI.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -9,26 +9,27 @@ import java.util.List;
 @RequestMapping(path = "/employees")
 public class EmployeeController {
 
-    final private EmployeeRepository employeeRepository;
+    final private EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
+
     @GetMapping(path = "/{employeeID}")
-    public EmployeeEntity getEmployeeById(@PathVariable Long employeeID) {
-        return employeeRepository.findById(employeeID).orElse(null);
+    public EmployeeDTO getEmployeeById(@PathVariable Long employeeID) {
+        return employeeService.findById(employeeID);
     }
 
     @GetMapping
-    public List<EmployeeEntity> getAllEmployee(@RequestParam(required = false) Integer age,
+    public List<EmployeeDTO> getAllEmployee(@RequestParam(required = false) Integer age,
                                                @RequestParam(required = false) String sortBy) {
-        return employeeRepository.findAll();
+        return employeeService.getAllEmployees();
     }
 
     @PostMapping
-    public EmployeeEntity creteNewEmployee(@RequestBody EmployeeEntity inputEntity) {
-        return employeeRepository.save(inputEntity);
+    public EmployeeDTO creteNewEmployee(@RequestBody EmployeeDTO inputEntity) {
+        return employeeService.createNewEmployee(inputEntity);
     }
 
 }
