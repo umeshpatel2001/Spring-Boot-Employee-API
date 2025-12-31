@@ -1,16 +1,14 @@
 package com.example.EmployeeAPI.controllers;
 
 import com.example.EmployeeAPI.dto.EmployeeDTO;
+import com.example.EmployeeAPI.exception.ResourceNotFoundException;
 import com.example.EmployeeAPI.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "/employees")
@@ -26,7 +24,7 @@ public class EmployeeController {
     @GetMapping(path = "/{employeeID}")
     public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long employeeID) {
         Optional<EmployeeDTO> employeeDTO = employeeService.findById(employeeID);
-        return employeeDTO.map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1)).orElse(ResponseEntity.notFound().build());
+        return employeeDTO.map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1)).orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: "+ employeeID));
     }
 
     @GetMapping

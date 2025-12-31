@@ -2,7 +2,6 @@ package com.example.EmployeeAPI.dto;
 
 import com.example.EmployeeAPI.annotations.EmployeeRoleValidation;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
