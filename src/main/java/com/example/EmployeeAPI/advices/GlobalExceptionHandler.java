@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ApiResponse<?>> buildErrorResponseEntity(ApiError apiError) {
-        return new ResponseEntity<>(new ApiResponse(apiError), apiError.getStatus());
+        return new ResponseEntity<>(new ApiResponse<>(apiError), apiError.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
