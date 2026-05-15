@@ -5,6 +5,9 @@ import com.example.EmployeeAPI.entities.EmployeeEntity;
 import com.example.EmployeeAPI.exception.ResourceNotFoundException;
 import com.example.EmployeeAPI.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ public class EmployeeService {
     }
 
 
+    @Cacheable(cacheNames = "employee", key = "#id")
     public Optional<EmployeeDTO> findById(Long employeeID) {
         Optional<EmployeeEntity> employeeEntity = employeeRepository.findById(employeeID);
         return employeeEntity.map(employeeEntity1 -> modelMapper.map(employeeEntity, EmployeeDTO.class));
@@ -38,12 +42,14 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @CachePut(cacheNames = "employee", key = "#result.id")
     public EmployeeDTO createNewEmployee(EmployeeDTO inputEntity) {
         EmployeeEntity toSaveEntity = modelMapper.map(inputEntity, EmployeeEntity.class);
         EmployeeEntity employeeEntity = employeeRepository.save(toSaveEntity);
         return modelMapper.map(employeeEntity, EmployeeDTO.class);
     }
 
+    @CachePut(cacheNames = "employee", key = "#result.id")
     public EmployeeDTO updateEmployeeById(Long employeeId, EmployeeDTO employeeDTO) {
         isExistById(employeeId);
         EmployeeEntity employeeEntity = modelMapper.map(employeeDTO, EmployeeEntity.class);
@@ -57,6 +63,7 @@ public class EmployeeService {
         if (!exist) throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
     }
 
+    @CacheEvict(cacheNames = "employee", key = "#id")
     public Boolean deleteEmployeeById(Long employeeId) {
         isExistById(employeeId);
         employeeRepository.deleteById(employeeId);
