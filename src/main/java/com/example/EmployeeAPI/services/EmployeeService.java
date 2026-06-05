@@ -60,7 +60,7 @@ public class EmployeeService {
 
     public void isExistById(Long employeeId) {
         boolean exist = employeeRepository.existsById(employeeId);
-        if (!exist) throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
+        if (!exist) throw new ResourceNotFoundException("Employee not found with id : " + employeeId);
     }
 
     @CacheEvict(cacheNames = "employee", key = "#id")
